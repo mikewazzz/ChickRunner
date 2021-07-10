@@ -1,21 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using _Game.Prefabs.Resources.Levels.Base;
 using Amsterdam.Managers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour
 {
     
     void Start()
     {
-        
+        InputManager.Instance._player = this;
     }
     
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (LevelManager.Instance.CurrentLevel.state  == Level.State.Started)
         {
-            LevelManager.Instance.CurrentLevel.StartCurrentLevel();
+          
         }
         
         if (Input.GetKeyDown(KeyCode.Return))
@@ -27,5 +29,20 @@ public class Player : MonoBehaviour
         {
             LevelManager.Instance.CurrentLevel.FailCurrentLevel();
         }
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Debug.Log("first  touch");
+    }
+
+    public void OnPointerDrag(PointerEventData eventData)
+    {
+        Debug.Log("first  drag");
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        Debug.Log("last  touch");
     }
 }
