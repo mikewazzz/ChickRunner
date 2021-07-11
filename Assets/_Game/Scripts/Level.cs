@@ -1,4 +1,6 @@
+using System;
 using Amsterdam.Managers.Extentions;
+using Cinemachine;
 using UnityEngine;
 
 namespace _Game.Prefabs.Resources.Levels.Base
@@ -20,11 +22,20 @@ namespace _Game.Prefabs.Resources.Levels.Base
         public GameEvent levelSuccess;
         public GameEvent levelFail;
 
+        public Animator _animatorLevel;
 
+        private CinemachineStateDrivenCamera _stateDriven;
         #region Life Cycle
+
+        private void Awake()
+        {
+          
+        }
 
         void Start()
         {
+            _stateDriven = FindObjectOfType<CinemachineStateDrivenCamera>();
+            _stateDriven.m_AnimatedTarget = _animatorLevel;
             state = State.Loaded;
             levelLoaded.Raise();
         }
@@ -46,6 +57,9 @@ namespace _Game.Prefabs.Resources.Levels.Base
                 state = State.Started;
                 Debug.Log("Level started!");
                 levelStarted.Raise();
+                
+                _animatorLevel.SetTrigger("raceCamTrig");
+
             }
             else
             {
@@ -58,6 +72,7 @@ namespace _Game.Prefabs.Resources.Levels.Base
         {
             if (state == State.Started)
             {
+
                 state = State.Success;
                 Debug.Log("Level success!");
                 levelSuccess.Raise();
