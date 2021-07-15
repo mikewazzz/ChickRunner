@@ -9,12 +9,18 @@ using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour
 {
-    private Rigidbody _rbPlayer;
+    public Transform rayObj;
+    public LayerMask layermask;
     public float speed;
+    public bool lastGrounded;
+
     private CinemachineStateDrivenCamera _stateDriven;
+    private bool grounded;
+    private Rigidbody _rbPlayer;
+
+
     private void Awake()
     {
-       
     }
 
     void Start()
@@ -25,38 +31,63 @@ public class Player : MonoBehaviour
         InputManager.Instance._player = this;
         _rbPlayer = GetComponent<Rigidbody>();
     }
-    
+
     void FixedUpdate()
     {
-        if (LevelManager.Instance.CurrentLevel.state  == Level.State.Started)
+        if (LevelManager.Instance.CurrentLevel.state == Level.State.Started)
         {
-            
             RunInfinite();
-            
+            CheckIfGround();
+
             if (Input.GetKeyDown(KeyCode.A))
             {
                 var level = LevelManager.Instance.CurrentLevel;
             }
-            
         }
-        
+
         if (Input.GetKeyDown(KeyCode.Return))
         {
             LevelManager.Instance.CurrentLevel.SuccessCurrentLevel();
         }
-        
+
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             LevelManager.Instance.CurrentLevel.FailCurrentLevel();
         }
     }
 
+    private void CheckIfGround()
+    {
+        grounded = (Physics.Raycast(rayObj.transform.position, Vector3.down, 1000f, layermask));
+        Vector3 forward = rayObj.transform.TransformDirection(Vector3.down) * 1;
+        Debug.DrawRay(rayObj.transform.position, forward, Color.red);
+
+        if (!grounded)
+        {
+            Debug.Log("not ground");
+        }
+
+
+        if (grounded != lastGrounded)
+        {
+            if (grounded)
+            {
+                Debug.Log("grounded one");
+            }
+            else
+            {
+                Debug.Log("not grounded one");
+            }
+        }
+        
+        lastGrounded = grounded;
+    }
+
     private void RunInfinite()
     {
         _rbPlayer.velocity = transform.forward * speed; // move local forward
-
     }
-    
+
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -74,7 +105,6 @@ public class Player : MonoBehaviour
         else
         {
             transform.Rotate(0, 12 * Time.deltaTime * eventData.delta.x, 0, Space.Self);
-
         }
     }
 
