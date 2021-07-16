@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using _Game.Prefabs.Resources.Levels.Base;
 using Amsterdam.Managers;
 using Cinemachine;
+using Cinemachine.Utility;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -17,6 +18,8 @@ public class Player : MonoBehaviour
     private CinemachineStateDrivenCamera _stateDriven;
     private bool grounded;
     private Rigidbody _rbPlayer;
+    private Transform parentPickup;
+    [SerializeField] private Transform stackPosition;
 
 
     private void Awake()
@@ -66,8 +69,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("not ground");
         }
-
-
+        
         if (grounded != lastGrounded)
         {
             if (grounded)
@@ -87,7 +89,6 @@ public class Player : MonoBehaviour
     {
         _rbPlayer.velocity = transform.forward * speed; // move local forward
     }
-
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -111,5 +112,30 @@ public class Player : MonoBehaviour
     public void OnPointerUp(PointerEventData eventData)
     {
         Debug.Log("last  touch");
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Pickup"))
+        {
+            Transform otherTransform = other.transform;
+            Rigidbody otherRB = otherTransform.GetComponent<Rigidbody>();
+
+            otherRB.isKinematic = true;
+            other.enabled = false;
+            if (parentPickup   == null)
+            {
+                parentPickup = otherTransform;
+                parentPickup.position = stackPosition.position;
+                parentPickup.parent = stackPosition;
+            }
+            else
+            {
+                parentPickup.position +=  Vector3.up * (other.transform.localScale.y);
+                otherTransform.position = stackPosition.position;
+                otherTransform.parent = stackPosition;
+            }
+            
+        }
     }
 }
