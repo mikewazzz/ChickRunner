@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using _Game.Prefabs.Resources.Levels.Base;
 using Amsterdam.Managers;
 using Cinemachine;
@@ -14,11 +15,16 @@ public class Player : MonoBehaviour
     public LayerMask layermask;
     public float speed;
     public bool lastGrounded;
-
+    public Transform leftBehindPos;
     private CinemachineStateDrivenCamera _stateDriven;
     private bool grounded;
     private Rigidbody _rbPlayer;
+    public List<GameObject> picks = new List<GameObject>();
+
     private Transform parentPickup;
+    private float timer = 0f;
+
+
     [SerializeField] private Transform stackPosition;
 
 
@@ -66,23 +72,48 @@ public class Player : MonoBehaviour
         Debug.DrawRay(rayObj.transform.position, forward, Color.red);
 
         if (!grounded)
+
         {
-            Debug.Log("not ground");
+            timer += Time.deltaTime;
+            if (timer > 1f)
+            {
+                LeftBehind();
+                timer = 0f;
+            }
         }
-        
+
         if (grounded != lastGrounded)
         {
             if (grounded)
             {
-                Debug.Log("grounded one");
+                Debug.Log("Grounded one!!");
             }
             else
             {
-                Debug.Log("not grounded one");
+                Debug.Log("not grounded one !!");
             }
         }
-        
+
         lastGrounded = grounded;
+    }
+
+    private void LeftBehind()
+    {
+        // var timeElapsed = 0f;
+        // var timeDur = 1f;
+
+        // while (timeElapsed < timeDur)
+        // {
+        Debug.Log("in coroitine ");
+
+
+        picks.ToList().Last().gameObject.transform.position = leftBehindPos.position;
+        picks.ToList().Last().transform.parent = null;
+        picks.Remove(picks.ToList().Last());
+        Debug.Log("in for ");
+
+
+        // }
     }
 
     private void RunInfinite()
@@ -118,24 +149,27 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Pickup"))
         {
-            Transform otherTransform = other.transform;
+            Transform otherTransform = other.transform.parent;
             Rigidbody otherRB = otherTransform.GetComponent<Rigidbody>();
 
             otherRB.isKinematic = true;
             other.enabled = false;
-            if (parentPickup   == null)
+            if (parentPickup == null)
             {
                 parentPickup = otherTransform;
                 parentPickup.position = stackPosition.position;
                 parentPickup.parent = stackPosition;
+
+                picks.Add(otherTransform.gameObject);
             }
             else
             {
-                parentPickup.position +=  Vector3.up * (other.transform.localScale.y);
+                parentPickup.position += Vector3.up * (otherTransform.localScale.y);
                 otherTransform.position = stackPosition.position;
-                otherTransform.parent = stackPosition;
+                otherTransform.parent = parentPickup;
+
+                picks.Add(otherTransform.gameObject);
             }
-            
         }
     }
 }
