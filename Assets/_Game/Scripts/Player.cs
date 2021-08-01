@@ -72,7 +72,6 @@ public class Player : MonoBehaviour
         Debug.DrawRay(rayObj.transform.position, forward, Color.red);
 
         if (!grounded)
-
         {
             timer += Time.deltaTime;
             if (timer > 1f)
@@ -93,27 +92,18 @@ public class Player : MonoBehaviour
                 Debug.Log("not grounded one !!");
             }
         }
-
+        
         lastGrounded = grounded;
     }
 
     private void LeftBehind()
     {
-        // var timeElapsed = 0f;
-        // var timeDur = 1f;
-
-        // while (timeElapsed < timeDur)
-        // {
-        Debug.Log("in coroitine ");
-
 
         picks.ToList().Last().gameObject.transform.position = leftBehindPos.position;
         picks.ToList().Last().transform.parent = null;
         picks.Remove(picks.ToList().Last());
         Debug.Log("in for ");
 
-
-        // }
     }
 
     private void RunInfinite()
