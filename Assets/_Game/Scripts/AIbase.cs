@@ -17,24 +17,57 @@ public class AIbase : MonoBehaviour
     private Transform parentPickup;
     [SerializeField] private Transform stackPosition;
     public Transform leftBehindPos;
-
+    public float AIMoveSpeed;
     public List<GameObject> picks = new List<GameObject>();
     private float timer = 0f;
-
+    private Rigidbody _rbAI;
 
 
     void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _rbAI = GetComponent<Rigidbody>();
+
     }
 
     void Update()
     {
         if (LevelManager.Instance.CurrentLevel.state == Level.State.Started)
         {
-            _agent.SetDestination(finishTarget.position);
             CheckIfCround();
+
+            if (picks.Count > 1 )
+            {
+                GoOnShort();
+                
+            }
+
+            if (picks.Count <= 1 )
+            {
+                GoOnRoad();
+            }else if (onRoad && picks.Count< 1)
+            {
+                _rbAI.constraints = RigidbodyConstraints.None;
+                _rbAI.isKinematic = false;
+                _rbAI.useGravity = true;// AI falls down
+            }
         }
+    }
+
+    private void GoOnRoad()
+    {
+        _agent.enabled = true;
+        _agent.SetDestination(finishTarget.position);
+
+    }
+
+    
+    private void GoOnShort()
+    {
+        _agent.enabled = false;
+        transform.position = Vector3.MoveTowards(transform.position, finishTarget.position, Time.deltaTime * AIMoveSpeed);
+        transform.LookAt(finishTarget);
+
     }
 
     private void CheckIfCround()
