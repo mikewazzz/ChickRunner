@@ -81,6 +81,7 @@ GameObject:
   - component: {fileID: 6736331521649662289}
   - component: {fileID: 6736331521649662294}
   - component: {fileID: 4199749149954737528}
+  - component: {fileID: 739238821}
   m_Layer: 5
   m_Name: InputManager
   m_TagString: Vanta
@@ -219,5 +220,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83090675cb182284bb944373d945986c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 0}
   inputBegin: {fileID: 11400000, guid: 63a43ba8fe649c547a336856910b8d4e, type: 2}
   inputEnd: {fileID: 11400000, guid: 8961acc65c2c9b84dac4bce9171345df, type: 2}
+  didFirstTouch: 0
+--- !u!114 &739238821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6736331521649662280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e075114a6bbc9a40a11991b9d2b5828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 63a43ba8fe649c547a336856910b8d4e, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4199749149954737528}
+        m_TargetAssemblyTypeName: Amsterdam.Managers.InputManager, Assembly-CSharp
+        m_MethodName: OnFirstTouch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
