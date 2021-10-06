@@ -26,11 +26,7 @@ public class Player : MonoBehaviour
 
 
     [SerializeField] private Transform stackPosition;
-
-
-    private void Awake()
-    {
-    }
+    
 
     void Start()
     {
